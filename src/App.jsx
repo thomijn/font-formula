@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Button } from "./components/ui/button";
 import { Input } from "./components/ui/input";
 import { Label } from "./components/ui/label";
@@ -11,12 +11,14 @@ function App() {
   const [cssOutput, setCssOutput] = useState("");
   const [show, setShow] = useState(false);
   const [css, setCss] = useState("");
+  const ref = useRef(null);
+  const [currentComputedSize, setCurrentComputedSize] = useState(0);
   const [copied, setCopied] = useState(false);
+
   const handleCalculate = () => {
     const baseSize = minSize;
     const slope = (maxSize - minSize) / (maxBreakpoint - minBreakpoint);
     const viewportAdjustment = 100 * slope; // Convert slope to percentage for viewport unit calculation
-    console.log(slope.toFixed(4));
     const css = `min(max(${minSize}px, calc(${baseSize}px + ${slope.toFixed(
       4
     )} * (100vw - ${minBreakpoint}px))), ${maxSize}px)`;
@@ -32,6 +34,19 @@ function App() {
       setCopied(false);
     }, 3000);
   };
+
+  console.log(currentComputedSize);
+
+  useEffect(() => {
+    // set the currentComputedSize to the computed font size when window is resized
+    const handleResize = () => {
+      const computedFontSize = window.getComputedStyle(ref.current).fontSize;
+      setCurrentComputedSize(computedFontSize);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
     <div className="w-screen h-screen flex justify-content items-center pt-[100px]">
@@ -107,11 +122,26 @@ function App() {
           </pre>
           {cssOutput && (
             <>
-              <Button onClick={() => setShow(!show)}>
-                {show ? "Hide" : "Show"} Sample Text
-              </Button>
+              <div className="flex gap-4 items-center">
+                <Button
+                  onClick={() => {
+                    setShow(!show);
+                    setCurrentComputedSize(
+                      ref.current
+                        ? window.getComputedStyle(ref.current).fontSize
+                        : `${maxSize}px`
+                    );
+                  }}
+                >
+                  {show ? "Hide" : "Show"} Sample Text
+                </Button>
+                {show && currentComputedSize !== 0 && (
+                  <span>Current size: {currentComputedSize}</span>
+                )}
+              </div>
               {show && (
                 <span
+                  ref={ref}
                   className="mt-[20px]"
                   style={{ fontSize: css, lineHeight: 1, display: "block" }}
                 >
