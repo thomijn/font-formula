@@ -35,7 +35,7 @@ function App() {
 
   return (
     <div className="w-screen h-screen flex justify-content items-center pt-[100px]">
-      <div className="w-full max-w-[800px] mx-auto rounded-xl min-h-[600px] h-auto h-1/2 bg-gray-100 p-[30px]">
+      <div className="w-full max-w-[800px] mx-auto rounded-xl min-h-[600px] h-auto h-1/2 bg-gray-100 p-[10px] sm:p-[30px]">
         <h1 className="text-3xl mb-[20px]">
           Responsive Font Size CSS Generator
         </h1>
@@ -45,7 +45,7 @@ function App() {
           formula. Copy the output to make your text perfectly scalable across
           devices.
         </p>
-        <div className="grid-cols-2 grid gap-4 gap-4 mb-[20px]">
+        <div className="sm:grid-cols-2 grid gap-4 gap-4 mb-[20px]">
           <div className="flex flex-col space-y-1.5">
             <Label htmlFor="name">Minimum font size (px)</Label>
             <Input
